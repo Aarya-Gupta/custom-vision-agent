@@ -297,7 +297,8 @@ class VisionAgent(Agent):
                 object is provided it will use that.
         """
 
-        self.agent = AnthropicLMM(temperature=0.0) if agent is None else agent
+        # self.agent = AnthropicLMM(temperature=0.0) if agent is None else agent
+        self.agent = OpenAILMM(temperature=0.0, json_mode=True) if agent is None else agent
         self.max_iterations = 12
         self.cwd = Path(cwd) if cwd is not None else Path.cwd()
         self.verbosity = verbosity
@@ -596,7 +597,8 @@ class AnthropicVisionAgent(VisionAgent):
                 object is provided it will use that.
         """
 
-        agent = AnthropicLMM(temperature=0.0) if agent is None else agent
+        # agent = AnthropicLMM(temperature=0.0) if agent is None else agent
+        agent = OpenAILMM(temperature=0.0, json_mode=True) if agent is None else agent
         super().__init__(
             agent,
             cwd,

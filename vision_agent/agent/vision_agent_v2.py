@@ -18,6 +18,7 @@ from vision_agent.agent.types import (
 from vision_agent.agent.vision_agent_coder_v2 import format_code_context
 from vision_agent.agent.vision_agent_prompts_v2 import CONVERSATION
 from vision_agent.lmm import LMM, AnthropicLMM
+from vision_agent.lmm import LMM, OpenAILMM
 from vision_agent.lmm.types import Message
 from vision_agent.utils.execute import CodeInterpreter, CodeInterpreterFactory
 
@@ -139,6 +140,9 @@ class VisionAgentV2(Agent):
         Parameters:
             agent (Optional[LMM]): The language model to use for the agent. If None, a
                 default AnthropicLMM will be used.
+
+                In our version, not using Anthropic LLM, using Only OpenAI LLM.
+
             coder (Optional[AgentCoder]): The coder agent to use for generating vision
                 code. If None, a default VisionAgentCoderV2 will be used.
             hil (bool): Whether to use human-in-the-loop mode.
@@ -153,9 +157,14 @@ class VisionAgentV2(Agent):
         self.agent = (
             agent
             if agent is not None
-            else AnthropicLMM(
-                model_name="claude-3-5-sonnet-20241022",
+            # else AnthropicLMM(
+            #     model_name="claude-3-5-sonnet-20241022",
+            #     temperature=0.0,
+            # )
+            else OpenAILMM(
+                model_name="gpt-4o-2024-05-13",
                 temperature=0.0,
+                json_mode=True,
             )
         )
         self.coder = (
