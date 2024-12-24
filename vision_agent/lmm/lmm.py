@@ -47,7 +47,7 @@ class OpenAILMM(LMM):
     def __init__(
         self,
         model_name: str = "gpt-4o-2024-05-13",
-        api_key: Optional[str] = None,
+        api_key: Optional[str] = "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",
         max_tokens: int = 4096,
         json_mode: bool = False,
         **kwargs: Any,
@@ -117,15 +117,22 @@ class OpenAILMM(LMM):
         response = self.client.chat.completions.create(
             model=self.model_name, messages=fixed_chat, **tmp_kwargs  # type: ignore
         )
-        if "stream" in tmp_kwargs and tmp_kwargs["stream"]:
+        # if "stream" in tmp_kwargs and tmp_kwargs["stream"]:
 
-            def f() -> Iterator[Optional[str]]:
+        #     def f() -> Iterator[Optional[str]]:
+        #         for chunk in response:
+        #             chunk_message = chunk.choices[0].delta.content  # type: ignore
+        #             yield chunk_message
+
+        #     return f()
+        if tmp_kwargs.get("stream", False):
+            print("AARYA")
+            def generator():
                 for chunk in response:
-                    chunk_message = chunk.choices[0].delta.content  # type: ignore
-                    yield chunk_message
-
-            return f()
+                    yield chunk.choices[0].delta.content
+            return generator()
         else:
+            print("GUPTA")
             return cast(str, response.choices[0].message.content)
 
     def generate(
