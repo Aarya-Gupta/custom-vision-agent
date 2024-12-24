@@ -165,15 +165,22 @@ class OpenAILMM(LMM):
         response = self.client.chat.completions.create(
             model=self.model_name, messages=message, **tmp_kwargs  # type: ignore
         )
-        if "stream" in tmp_kwargs and tmp_kwargs["stream"]:
+        # if "stream" in tmp_kwargs and tmp_kwargs["stream"]:
 
-            def f() -> Iterator[Optional[str]]:
+        #     def f() -> Iterator[Optional[str]]:
+        #         for chunk in response:
+        #             chunk_message = chunk.choices[0].delta.content  # type: ignore
+        #             yield chunk_message
+
+        #     return f()
+        if tmp_kwargs.get("stream", False):
+            print("AARYA")
+            def generator():
                 for chunk in response:
-                    chunk_message = chunk.choices[0].delta.content  # type: ignore
-                    yield chunk_message
-
-            return f()
+                    yield chunk.choices[0].delta.content
+            return generator()
         else:
+            print("GUPTA")
             return cast(str, response.choices[0].message.content)
 
 
