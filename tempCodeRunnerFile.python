@@ -1,0 +1,18 @@
+def mask_personal_info(data):
+    if "@" in data:  # Email masking
+        data = data.lower()
+        local, domain = data.split("@")
+        masked_local = local[0] + "*****" + local[-1]  # Keep first and last character
+        return masked_local + "@" + domain
+    else:  # Phone number masking
+        digits = "".join(c for c in data if c.isdigit())  # Extract only digits
+        country_code_len = len(digits) - 10
+        masked_phone = "###-###-" + digits[-4:]
+        if country_code_len > 0:
+            return "+" + "#" * country_code_len + "-" + masked_phone
+        return masked_phone
+
+# Example usage:
+print(mask_personal_info("JohnDoe@Example.com"))  # Output: "j*****e@example.com"
+print(mask_personal_info("+1 (734) 567-8901"))   # Output: "+*-***-***-8901"
+print(mask_personal_info("123-456-7890"))       # Output: "***-***-7890"
